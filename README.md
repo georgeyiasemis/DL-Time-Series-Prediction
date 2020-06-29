@@ -14,7 +14,7 @@ numpy
 pandas
 torch
 sklearn
-<!--```-->
+```
 
 <!--### Installing-->
 
