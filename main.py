@@ -1,10 +1,6 @@
 import torch
-import torch.nn as nn
+
 from torch.autograd import Variable
-from torch.utils.data import DataLoader
-import torchvision.transforms as transforms
-import torchvision.datasets as dsets
-import torch.utils.data as Data
 import numpy as np
 #################################################################################
 #                                                                               #
@@ -23,31 +19,30 @@ else:
 class EarlyStopping():
 
     """
-	
+
 	Early stops the training if validation loss doesn't
     improve after a given patience.
-	
+
 	"""
 
     def __init__(self, path, patience=7, verbose=False, delta=0):
-    	"""
-    	
-    	Parameters
-    	----------
-    	path : str
-    		Path of where to save checkpoints.
-    	patience : int, optional
-    		Iterations to wait after last time validation loss improved.
-			 The default is 7.
-    	verbose : bool, optional
-    		If True, prints a message for each validation loss improvement.
-			 The default is False.
-    	delta : float, optional
-    		Minimum change in the monitored quantity to qualify as an improvement. 
-			 Positive. The default is 0.
+#     	"""
 
-    	"""
-		
+#     	Parameters
+#     	----------
+#     	path : str
+#     		Path of where to save checkpoints.
+#     	patience : int, optional
+#     		Iterations to wait after last time validation loss improved.
+# 			 The default is 7.
+#     	verbose : bool, optional
+#     		If True, prints a message for each validation loss improvement.
+# 			 The default is False.
+#     	delta : float, optional
+#     		Minimum change in the monitored quantity to qualify as an improvement.
+# 			 Positive. The default is 0.
+
+#     	"""
 
         self.patience = patience
         self.verbose = verbose
@@ -90,51 +85,50 @@ class EarlyStopping():
 
 def train(model, optimizer, criterion, epochs, train_loader, val_loader, device, scheduler=None,
             valid_every_step=10, early_stopping=None, regularization=None):
-	"""
-	Trains and returns a trained model
-	
+# 	"""
+# 	Trains and returns a trained model
 
-	Parameters
-	----------
-	model : torch.nn.Module
-		Model to be trained.
-	optimizer : torch.optim
-		Optimizer to update network's weights.
-	criterion : torch.nn loss function
-		Objective function to be optimised.
-	epochs : int
-		Number of epochs to train the model.
-	train_loader : torch.utils.data.DataLoader
-		Iterable with training data.
-	val_loader : torch.utils.data.DataLoader
-		Iterable with validation data.
-	device : str
-		{cuda, cpu}.
-	scheduler :  torch.optim.lr_scheduler, optional
-		Reduces the value of the optimizer's learning rate. The default is None.
-	valid_every_step : int, optional
-		Evaluate model on validation data. The default is 1.
-	early_stopping : EarlyStopping object, optional
-		Performs early stopping. The default is None.
-	regularization : float, optional
-		Regularization parameter. Positive. The default is None.
 
-	Returns
-	-------
-	model : torch.nn.Module
-		Trained model.
-	losses : list
-		Train Losses.
-	val_losses : list
-		Validation losses.
+# 	Parameters
+# 	----------
+# 	model : torch.nn.Module
+# 		Model to be trained.
+# 	optimizer : torch.optim
+# 		Optimizer to update network's weights.
+# 	criterion : torch.nn loss function
+# 		Objective function to be optimised.
+# 	epochs : int
+# 		Number of epochs to train the model.
+# 	train_loader : torch.utils.data.DataLoader
+# 		Iterable with training data.
+# 	val_loader : torch.utils.data.DataLoader
+# 		Iterable with validation data.
+# 	device : str
+# 		{cuda, cpu}.
+# 	scheduler :  torch.optim.lr_scheduler, optional
+# 		Reduces the value of the optimizer's learning rate. The default is None.
+# 	valid_every_step : int, optional
+# 		Evaluate model on validation data. The default is 1.
+# 	early_stopping : EarlyStopping object, optional
+# 		Performs early stopping. The default is None.
+# 	regularization : float, optional
+# 		Regularization parameter. Positive. The default is None.
 
-	"""
-    
-    
+# 	Returns
+# 	-------
+# 	model : torch.nn.Module
+# 		Trained model.
+# 	losses : list
+# 		Train Losses.
+# 	val_losses : list
+# 		Validation losses.
+
+# 	"""
+
 
     losses = []
     val_losses = []
-    
+
     for epoch in range(epochs):
 
         train_loss = 0.0
@@ -200,38 +194,38 @@ def train(model, optimizer, criterion, epochs, train_loader, val_loader, device,
         losses.append(train_loss)# / len(train_loader.dataset))
         print("Epoch: [{:^4}/{:^5}]. Train Loss: {:8f}. Validation Loss: {:8f}".format(epoch,
 													   epochs, losses[-1], val_losses[-1] ))
-        
+
         # Update lr if scheduler option
         if scheduler != None:
             scheduler.step()
-            
+
     return model, losses, val_losses
 
 
 
 def eval(model, X, y, y_true, criterion, device):
-	"""
-	Performs one validation step.
+# 	"""
+# 	Performs one validation step.
 
-	Parameters
-	----------
-	model : torch.nn.Module
-		.
-	X : torch.Tensor
-		Features of shape (batch_size, seq_len, input_len).
-	y : torch.Tensor
-		Past target features of shape (batch_size, seq_len, 1).
-	y_true : torch.Tensor
-		Target values of shape (batch_size, 1).
-	criterion : torch.nn Loss
-		Objective function.
-	device : str
-		{cuda, cpu}.
+# 	Parameters
+# 	----------
+# 	model : torch.nn.Module
+# 		.
+# 	X : torch.Tensor
+# 		Features of shape (batch_size, seq_len, input_len).
+# 	y : torch.Tensor
+# 		Past target features of shape (batch_size, seq_len, 1).
+# 	y_true : torch.Tensor
+# 		Target values of shape (batch_size, 1).
+# 	criterion : torch.nn Loss
+# 		Objective function.
+# 	device : str
+# 		{cuda, cpu}.
 
 
 
-	"""
-	
+# 	"""
+
     x = Variable(X).to(device)
     y = Variable(y).to(device)
     label = Variable(y_true).to(device)
@@ -239,3 +233,13 @@ def eval(model, X, y, y_true, criterion, device):
     loss = criterion(outputs.squeeze(), label.squeeze())
 
     return loss.item()
+
+def compute_sharpe_ratio(pred, true):
+    pred = pred.detach().cpu().numpy()
+    true = true.cpu().numpy()
+    y = np.diff(true.reshape(-1, 1), axis=0)
+    returns = np.sign(np.diff(pred.reshape(-1, 1), axis=0)) * y
+
+    sr = np.sqrt(252) * (returns.mean() / np.sqrt(returns.var()))
+
+    return sr
