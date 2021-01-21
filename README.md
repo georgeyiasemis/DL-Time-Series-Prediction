@@ -1,8 +1,4 @@
-# stock_prediction
-
-
-
-## Getting Started
+# Time Series Prediction Using LSTMs
 
 
 ### Prerequisites
